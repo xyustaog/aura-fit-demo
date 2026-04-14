@@ -1508,6 +1508,7 @@ function renderInstructores(){
         <div class="inst-stat">${clases.length} clases asignadas</div>
       </div>
       <div style="display:flex;flex-direction:column;gap:4px">
+        <button class="btn btn-secondary btn-sm" onclick="editInstructor('${i.id}')">✏️</button>
         <button class="btn btn-danger btn-sm" onclick="deleteInstructor('${i.id}')">🗑️</button>
       </div>
     </div>`;
@@ -1568,6 +1569,30 @@ function saveInstructor(){
   saveDB(); closeModal('modal-add-instructor'); toast('Instructor agregado'); renderInstructores();
 }
 
+function editInstructor(id){
+  const i=DB.instructores.find(x=>x.id===id); if(!i) return;
+  document.getElementById('in-nombre').value=i.nombre;
+  document.getElementById('in-esp').value=i.especialidad||'';
+  document.getElementById('in-tel').value=i.tel||'';
+  document.getElementById('in-comision').value=i.comision||40;
+  document.getElementById('in-precio').value=i.precioPorClase||3000;
+  // Swap save button to update mode
+  const btn=document.querySelector('#modal-add-instructor .btn-primary');
+  if(btn){ btn.textContent='Guardar cambios'; btn.setAttribute('onclick',`updateInstructor('${id}')`); }
+  openModal('modal-add-instructor');
+}
+function updateInstructor(id){
+  const i=DB.instructores.find(x=>x.id===id); if(!i) return;
+  const nombre=document.getElementById('in-nombre').value.trim();
+  if(!nombre){ toast('⚠️ Ingresá un nombre'); return; }
+  i.nombre=nombre; i.especialidad=document.getElementById('in-esp').value;
+  i.tel=document.getElementById('in-tel').value||''; i.comision=Number(document.getElementById('in-comision').value)||40;
+  i.precioPorClase=Number(document.getElementById('in-precio').value)||3000;
+  saveDB(); closeModal('modal-add-instructor'); toast('Instructor actualizado'); renderInstructores();
+  // Restore save button
+  const btn=document.querySelector('#modal-add-instructor .btn-primary');
+  if(btn){ btn.textContent='Agregar instructor'; btn.setAttribute('onclick','saveInstructor()'); }
+}
 function deleteInstructor(id){
   if(DB.clases.some(c=>c.instructor===id)){ toast('⚠️ Tiene clases asignadas. Reasignalas primero.'); return; }
   DB.instructores=DB.instructores.filter(i=>i.id!==id);
