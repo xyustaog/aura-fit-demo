@@ -113,6 +113,10 @@ tr:hover td{background:rgba(59,91,219,0.04)}
 .btn-icon{padding:6px 8px;font-size:14px}
 .btn-wa{background:#25D366;color:#fff;border-color:#25D366}
 .btn-wa:hover{background:#20b858}
+.btn-ghost{background:transparent;border:1px solid rgba(240,240,255,0.1);color:var(--muted)}
+.btn-ghost:hover{border-color:var(--primary);color:var(--primary-light)}
+.btn-secondary{background:rgba(59,91,219,0.12);color:var(--primary-light);border:1px solid rgba(59,91,219,0.25)}
+.btn-secondary:hover{background:rgba(59,91,219,0.22)}
 
 /* INPUTS */
 .input{background:#0A0A18;border:1px solid rgba(59,91,219,0.2);border-radius:2px;padding:9px 12px;color:var(--text);font-size:13px;width:100%;font-weight:300;transition:.2s}
@@ -532,7 +536,7 @@ select.input option{background:var(--card)}
       <div class="form-row">
         <div class="form-field"><label class="form-label">Nombre *</label>
           <select class="input" id="cl-nombre">
-            <option>Spinning</option><option>Yoga</option><option>Crossfit</option><option>Zumba</option><option>Funcional</option><option>Pilates</option>
+            <option>Spinning</option><option>Yoga</option><option>Funcional</option><option>Musculación</option><option>Zumba</option><option>Pilates</option>
           </select>
         </div>
         <div class="form-field"><label class="form-label">Día *</label>
@@ -577,7 +581,7 @@ select.input option{background:var(--card)}
         <div class="form-field"><label class="form-label">Nombre *</label><input class="input" id="in-nombre" placeholder="Carlos López"></div>
         <div class="form-field"><label class="form-label">Especialidad *</label>
           <select class="input" id="in-esp">
-            <option>Spinning</option><option>Yoga</option><option>Crossfit</option><option>Zumba</option><option>Funcional</option><option>Pilates</option><option>Múltiple</option>
+            <option>Spinning</option><option>Yoga</option><option>Funcional</option><option>Musculación</option><option>Zumba</option><option>Pilates</option><option>Múltiple</option>
           </select>
         </div>
       </div>
@@ -621,36 +625,40 @@ function loadDB(){
 // ============================================================
 function initDemoData(){
   const planes = [
-    {id:'p1', nombre:'Mensual Full', desc:'Acceso ilimitado todos los días', precio:25000, duracion:30, acceso:'ilimitado'},
-    {id:'p2', nombre:'Mensual 3x Semana', desc:'3 veces por semana', precio:18000, duracion:30, acceso:'3x'},
-    {id:'p3', nombre:'Trimestral', desc:'3 meses acceso full', precio:65000, duracion:90, acceso:'trimestral'},
-    {id:'p4', nombre:'Anual', desc:'12 meses acceso completo', precio:220000, duracion:365, acceso:'anual'},
-    {id:'p5', nombre:'Solo Clases Grupales', desc:'Acceso solo a clases grupales', precio:15000, duracion:30, acceso:'clases'},
+    {id:'p1', nombre:'Mensual Full', desc:'Acceso ilimitado todos los días', precio:18500, duracion:30, acceso:'ilimitado'},
+    {id:'p2', nombre:'Mensual 3x Semana', desc:'3 veces por semana', precio:14000, duracion:30, acceso:'3x'},
+    {id:'p3', nombre:'Trimestral', desc:'3 meses acceso full', precio:48000, duracion:90, acceso:'trimestral'},
+    {id:'p4', nombre:'Anual', desc:'12 meses acceso completo', precio:168000, duracion:365, acceso:'anual'},
+    {id:'p5', nombre:'Solo Clases Grupales', desc:'Acceso solo a clases grupales', precio:11000, duracion:30, acceso:'clases'},
   ];
 
   const instructores = [
     {id:'i1', nombre:'Marcos Sánchez', especialidad:'Spinning', tel:'1155550001', comision:40, precioPorClase:3500},
     {id:'i2', nombre:'Laura Gómez', especialidad:'Yoga', tel:'1155550002', comision:45, precioPorClase:3000},
-    {id:'i3', nombre:'Diego Torres', especialidad:'Crossfit', tel:'1155550003', comision:40, precioPorClase:4000},
+    {id:'i3', nombre:'Diego Torres', especialidad:'Funcional', tel:'1155550003', comision:40, precioPorClase:3800},
+    {id:'i4', nombre:'Valeria Pereyra', especialidad:'Zumba', tel:'1155550004', comision:40, precioPorClase:2800},
+    {id:'i5', nombre:'Rodrigo Almada', especialidad:'Musculación', tel:'1155550005', comision:40, precioPorClase:4000},
+    {id:'i6', nombre:'Florencia Ríos', especialidad:'Pilates', tel:'1155550006', comision:45, precioPorClase:3200},
   ];
 
   const dias = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
   const clases = [
-    {id:'c1', nombre:'Spinning', dia:1, hora:'07:00', duracion:60, instructor:'i1', cupo:20, inscritos:['s1','s3','s5','s7','s9'], lista_espera:[]},
-    {id:'c2', nombre:'Yoga', dia:1, hora:'09:00', duracion:60, instructor:'i2', cupo:15, inscritos:['s2','s4','s6'], lista_espera:[]},
-    {id:'c3', nombre:'Funcional', dia:1, hora:'18:00', duracion:45, instructor:'i3', cupo:20, inscritos:['s1','s8','s10','s11','s12'], lista_espera:[]},
-    {id:'c4', nombre:'Crossfit', dia:2, hora:'07:00', duracion:60, instructor:'i3', cupo:15, inscritos:['s3','s5','s7','s9','s13'], lista_espera:[]},
-    {id:'c5', nombre:'Zumba', dia:2, hora:'19:00', duracion:60, instructor:'i2', cupo:25, inscritos:['s2','s4','s6','s14','s15'], lista_espera:[]},
-    {id:'c6', nombre:'Pilates', dia:3, hora:'09:00', duracion:60, instructor:'i2', cupo:12, inscritos:['s16','s17','s18'], lista_espera:[]},
-    {id:'c7', nombre:'Spinning', dia:3, hora:'07:00', duracion:60, instructor:'i1', cupo:20, inscritos:['s1','s3','s7','s19'], lista_espera:[]},
-    {id:'c8', nombre:'Funcional', dia:3, hora:'18:00', duracion:45, instructor:'i3', cupo:20, inscritos:['s8','s10','s20','s21'], lista_espera:[]},
-    {id:'c9', nombre:'Crossfit', dia:4, hora:'07:00', duracion:60, instructor:'i3', cupo:15, inscritos:['s3','s5','s9','s22'], lista_espera:[]},
-    {id:'c10', nombre:'Yoga', dia:4, hora:'09:00', duracion:60, instructor:'i2', cupo:15, inscritos:['s2','s4','s6','s23'], lista_espera:[]},
-    {id:'c11', nombre:'Spinning', dia:5, hora:'07:00', duracion:60, instructor:'i1', cupo:20, inscritos:['s1','s3','s5','s7','s24','s25'], lista_espera:[]},
-    {id:'c12', nombre:'Zumba', dia:5, hora:'19:00', duracion:60, instructor:'i2', cupo:25, inscritos:['s2','s14','s15','s16'], lista_espera:[]},
-    {id:'c13', nombre:'Pilates', dia:6, hora:'10:00', duracion:60, instructor:'i2', cupo:12, inscritos:['s17','s18','s23'], lista_espera:[]},
-    {id:'c14', nombre:'Funcional', dia:6, hora:'09:00', duracion:45, instructor:'i3', cupo:20, inscritos:['s8','s10','s19','s20'], lista_espera:[]},
-    {id:'c15', nombre:'Crossfit', dia:6, hora:'08:00', duracion:60, instructor:'i3', cupo:15, inscritos:['s3','s5','s7','s9','s13'], lista_espera:[]},
+    {id:'c1',  nombre:'Spinning',     dia:1, hora:'07:00', duracion:60, instructor:'i1', cupo:20, inscritos:['s1','s3','s5','s7','s9'], lista_espera:[]},
+    {id:'c2',  nombre:'Yoga',         dia:1, hora:'09:00', duracion:60, instructor:'i2', cupo:15, inscritos:['s2','s4','s6'], lista_espera:[]},
+    {id:'c3',  nombre:'Funcional',    dia:1, hora:'18:00', duracion:45, instructor:'i3', cupo:20, inscritos:['s1','s8','s10','s11','s12'], lista_espera:[]},
+    {id:'c4',  nombre:'Musculación',  dia:1, hora:'20:00', duracion:60, instructor:'i5', cupo:15, inscritos:['s3','s5','s7','s13'], lista_espera:[]},
+    {id:'c5',  nombre:'Spinning',     dia:2, hora:'07:00', duracion:60, instructor:'i1', cupo:20, inscritos:['s1','s3','s9','s24','s25'], lista_espera:[]},
+    {id:'c6',  nombre:'Zumba',        dia:2, hora:'19:00', duracion:60, instructor:'i4', cupo:25, inscritos:['s2','s4','s6','s14','s15'], lista_espera:[]},
+    {id:'c7',  nombre:'Pilates',      dia:3, hora:'09:00', duracion:60, instructor:'i6', cupo:12, inscritos:['s16','s17','s18'], lista_espera:[]},
+    {id:'c8',  nombre:'Spinning',     dia:3, hora:'07:00', duracion:60, instructor:'i1', cupo:20, inscritos:['s1','s3','s7','s19'], lista_espera:[]},
+    {id:'c9',  nombre:'Funcional',    dia:3, hora:'18:00', duracion:45, instructor:'i3', cupo:20, inscritos:['s8','s10','s20','s21'], lista_espera:[]},
+    {id:'c10', nombre:'Musculación',  dia:4, hora:'07:00', duracion:60, instructor:'i5', cupo:15, inscritos:['s3','s5','s9','s22'], lista_espera:[]},
+    {id:'c11', nombre:'Yoga',         dia:4, hora:'09:00', duracion:60, instructor:'i2', cupo:15, inscritos:['s2','s4','s6','s23'], lista_espera:[]},
+    {id:'c12', nombre:'Spinning',     dia:5, hora:'07:00', duracion:60, instructor:'i1', cupo:20, inscritos:['s1','s3','s5','s7','s24','s25'], lista_espera:[]},
+    {id:'c13', nombre:'Zumba',        dia:5, hora:'19:00', duracion:60, instructor:'i4', cupo:25, inscritos:['s2','s14','s15','s16'], lista_espera:[]},
+    {id:'c14', nombre:'Pilates',      dia:6, hora:'10:00', duracion:60, instructor:'i6', cupo:12, inscritos:['s17','s18','s23'], lista_espera:[]},
+    {id:'c15', nombre:'Funcional',    dia:6, hora:'09:00', duracion:45, instructor:'i3', cupo:20, inscritos:['s8','s10','s19','s20'], lista_espera:[]},
+    {id:'c16', nombre:'Musculación',  dia:6, hora:'08:00', duracion:60, instructor:'i5', cupo:15, inscritos:['s3','s5','s7','s9','s13'], lista_espera:[]},
   ];
 
   function addDays(date, n){ const d=new Date(date); d.setDate(d.getDate()+n); return d.toISOString().split('T')[0]; }
@@ -723,11 +731,12 @@ function initDemoData(){
   ];
 
   const egresos = [
-    {concepto:'Sueldos instructores', monto:85000, categoria:'sueldos'},
-    {concepto:'Alquiler local', monto:120000, categoria:'alquiler'},
-    {concepto:'Servicios (luz/gas/internet)', monto:35000, categoria:'servicios'},
-    {concepto:'Mantenimiento equipos', monto:15000, categoria:'mantenimiento'},
-    {concepto:'Limpieza', monto:20000, categoria:'otros'},
+    {concepto:'Sueldos instructores', monto:380000, categoria:'sueldos'},
+    {concepto:'Alquiler local', monto:520000, categoria:'alquiler'},
+    {concepto:'Servicios (luz/gas/internet)', monto:95000, categoria:'servicios'},
+    {concepto:'Mantenimiento equipos', monto:48000, categoria:'mantenimiento'},
+    {concepto:'Limpieza', monto:62000, categoria:'otros'},
+    {concepto:'Seguros y expensas', monto:35000, categoria:'otros'},
   ];
 
   return { planes, instructores, clases, socios, checkins, egresos, nextId:100 };
@@ -737,8 +746,8 @@ function initDemoData(){
 // UTILS
 // ============================================================
 function uid(){ DB.nextId = (DB.nextId||100)+1; return 'u'+DB.nextId; }
-function fmt(n){ return '$'+Number(n).toLocaleString('es-AR'); }
-function fmtDate(d){ if(!d) return '—'; const p=d.split('-'); return `${p[2]}/${p[1]}/${p[0]}`; }
+function fmt(n){ const v=Number(n); return isNaN(v)?'$0':'$'+v.toLocaleString('es-AR'); }
+function fmtDate(d){ if(!d) return '—'; const p=d.split('-'); if(p.length<3) return d; return `${p[2].padStart(2,'0')}/${p[1].padStart(2,'0')}/${p[0]}`; }
 function addDays(date, n){ const d=new Date(date); d.setDate(d.getDate()+n); return d.toISOString().split('T')[0]; }
 function diffDays(a, b){ return Math.round((new Date(b)-new Date(a))/(1000*60*60*24)); }
 
@@ -763,6 +772,7 @@ function toast(msg, type='info', dur=2500){
   // allow old callers that pass a number as second arg (legacy dur)
   if(typeof type === 'number'){ dur=type; type='info'; }
   const t=document.getElementById('toast');
+  if(!t) return;
   t.textContent=msg;
   t.style.borderColor = type==='error' ? 'rgba(240,62,62,.5)' : type==='warning' ? 'rgba(250,176,5,.5)' : type==='success' ? 'rgba(34,197,94,.5)' : 'var(--border)';
   t.style.color = type==='error' ? 'var(--danger)' : type==='warning' ? 'var(--warn)' : type==='success' ? '#22C55E' : 'var(--text)';
@@ -776,7 +786,8 @@ function closeModal(id){ document.getElementById(id).classList.remove('open'); }
 function nav(section){
   state.section=section;
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.getElementById('sec-'+section).classList.add('active');
+  const secEl=document.getElementById('sec-'+section);
+  if(secEl) secEl.classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.querySelectorAll('.bnav-item').forEach(n=>n.classList.remove('active'));
   const idx=['dashboard','socios','planes','clases','acceso','instructores','caja'].indexOf(section);
@@ -829,7 +840,7 @@ function renderDashboard(){
   const mesActual=TODAY.getMonth(); const anioActual=TODAY.getFullYear();
   let ingresosMes=0, ingresosMesAnt=0;
   socios.forEach(s=>{
-    s.pagos.forEach(p=>{
+    (s.pagos||[]).forEach(p=>{
       const d=new Date(p.fecha);
       if(d.getMonth()===mesActual && d.getFullYear()===anioActual) ingresosMes+=Number(p.monto);
       if(d.getMonth()===(mesActual===0?11:mesActual-1) && d.getFullYear()===(mesActual===0?anioActual-1:anioActual)) ingresosMesAnt+=Number(p.monto);
@@ -1039,10 +1050,15 @@ function backToSocios(){
 }
 
 function switchTab(el, id){
-  el.closest('.section, [id]').querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  const container = el.closest('.section') || el.parentElement;
+  container.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
-  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  // Only deactivate tab-panes that are siblings of the target
+  const target = document.getElementById(id);
+  if(!target) return;
+  const paneParent = target.parentElement;
+  if(paneParent) paneParent.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  target.classList.add('active');
 }
 
 function saveNotas(id){
@@ -1138,7 +1154,8 @@ function renderPlanes(){
   DB.socios.forEach(s=>{ counts[s.planId]=(counts[s.planId]||0)+1; });
   document.getElementById('planes-list').innerHTML=DB.planes.map(p=>{
     const n=counts[p.id]||0;
-    const pct=DB.socios.length>0?Math.round(n/DB.socios.length*100):0;
+    const total=DB.socios&&DB.socios.length>0?DB.socios.length:1;
+    const pct=Math.round(n/total*100);
     return `<div class="table-wrap" style="margin:0">
       <div style="padding:18px">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
@@ -1210,7 +1227,8 @@ function deletePlan(id){
 const diasNombres=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
 const claseTipos={
   'Spinning':'clase-spinning','Yoga':'clase-yoga','Crossfit':'clase-crossfit',
-  'Zumba':'clase-zumba','Funcional':'clase-funcional','Pilates':'clase-pilates'
+  'Zumba':'clase-zumba','Funcional':'clase-funcional','Pilates':'clase-pilates',
+  'Musculación':'clase-crossfit'
 };
 
 function renderClases(){
@@ -1476,7 +1494,7 @@ function renderHourChart(){
   if(!el) return;
   const horas=['07','08','09','10','11','12','17','18','19','20'];
   const counts={};
-  DB.checkins.forEach(c=>{
+  (DB.checkins||[]).forEach(c=>{
     const h=c.hora?c.hora.split(':')[0]:'00';
     counts[h]=(counts[h]||0)+1;
   });
@@ -1524,7 +1542,7 @@ function renderLiquidacion(){
   const id=document.getElementById('liq-instructor')?.value;
   if(!id) return;
   const inst=getInstructor(id);
-  const clases=DB.clases.filter(c=>c.instructor===id);
+  const clases=(DB.clases||[]).filter(c=>c.instructor===id);
   const el=document.getElementById('liquidacion-detail');
   if(!el) return;
   let total=0;
@@ -1609,7 +1627,7 @@ function renderCaja(){
 
   // Ingresos por plan
   const porPlan={};
-  DB.socios.forEach(s=>{
+  (DB.socios||[]).forEach(s=>{
     s.pagos.forEach(p=>{
       const d=new Date(p.fecha);
       if(d.getMonth()===mesActual&&d.getFullYear()===anioActual){
@@ -1628,7 +1646,7 @@ function renderCaja(){
   const totalExtra=extraIngresos.reduce((a,b)=>a+b.monto,0);
   totalIngresos+=totalExtra;
 
-  const totalEgresos=DB.egresos.reduce((a,b)=>a+b.monto,0);
+  const totalEgresos=(DB.egresos||[]).reduce((a,b)=>a+b.monto,0);
   const resultado=totalIngresos-totalEgresos;
 
   // Morosos
@@ -1644,8 +1662,8 @@ function renderCaja(){
 
   // Build payment history for this month across all members
   const pagosMes=[];
-  DB.socios.forEach(s=>{
-    s.pagos.forEach(p=>{
+  (DB.socios||[]).forEach(s=>{
+    (s.pagos||[]).forEach(p=>{
       const d=new Date(p.fecha);
       if(d.getMonth()===mesActual&&d.getFullYear()===anioActual){
         pagosMes.push({socio:`${s.nombre} ${s.apellido}`, plan:getPlan(s.planId).nombre, monto:p.monto, metodo:p.metodo, fecha:p.fecha, mes:p.mes});
@@ -1711,7 +1729,8 @@ function renderCaja(){
             const color=d.actual?'#3B5BDB':'rgba(59,91,219,0.4)';
             bars+=`<rect x="${x}" y="${y}" width="${barW}" height="${bh}" rx="2" fill="${color}"/>`;
             labels+=`<text x="${x+barW/2}" y="${svgH-8}" text-anchor="middle" fill="#6B6B8A" font-size="11">${d.label}</text>`;
-            if(d.total>0) vals+=`<text x="${x+barW/2}" y="${y-5}" text-anchor="middle" fill="${d.actual?'#4C6EF5':'#9999BB'}" font-size="10">${d.total>=1000?'$'+(d.total/1000).toFixed(0)+'k':fmt(d.total)}</text>`;
+            const tVal=Number(d.total)||0;
+            if(tVal>0) vals+=`<text x="${x+barW/2}" y="${y-5}" text-anchor="middle" fill="${d.actual?'#4C6EF5':'#9999BB'}" font-size="10">${tVal>=1000?'$'+(tVal/1000).toFixed(0)+'k':fmt(tVal)}</text>`;
           });
           return `<svg viewBox="0 0 ${svgW} ${svgH}" style="width:100%;max-width:${svgW}px;height:${svgH}px;overflow:visible">${bars}${labels}${vals}</svg>`;
         })()}
@@ -1808,6 +1827,7 @@ function getSociosporVencer(dias=7){
   const limStr = limite.toISOString().split('T')[0];
   return (DB.socios||[]).filter(s =>
     s.estado === 'activo' &&
+    s.fechaVencimiento &&
     s.fechaVencimiento >= todayStr &&
     s.fechaVencimiento <= limStr
   );
@@ -1815,7 +1835,7 @@ function getSociosporVencer(dias=7){
 
 function renderAlertasSocios(){
   const porVencer = getSociosporVencer(7);
-  const vencidos = (DB.socios||[]).filter(s => s.estado==='activo' && s.fechaVencimiento < todayStr);
+  const vencidos = (DB.socios||[]).filter(s => s.estado==='activo' && s.fechaVencimiento && s.fechaVencimiento < todayStr);
   const el = document.getElementById('alertas-socios');
   if(!el) return;
   const items = [];
