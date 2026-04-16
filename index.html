@@ -384,8 +384,12 @@ select.input option{background:var(--card)}
 
     <!-- ACCESO -->
     <div class="section" id="sec-acceso">
-      <div class="page-title">Control de Acceso</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;flex-wrap:wrap;gap:8px">
+        <div class="page-title">Control de Acceso</div>
+        <button class="btn btn-primary" onclick="openModal('modal-checkin-manual')">+ Registrar Entrada Manual</button>
+      </div>
       <div class="page-sub">Registro de entradas en tiempo real</div>
+      <div class="kpi-grid" id="acceso-kpi-grid" style="margin-bottom:20px"></div>
       <div class="search-big">
         <span class="search-icon">🔍</span>
         <input class="input" id="checkin-input" placeholder="Nombre o DNI del socio..." oninput="searchCheckin()" autocomplete="off">
@@ -394,7 +398,12 @@ select.input option{background:var(--card)}
       <div id="checkin-result-box"></div>
       <div class="two-col">
         <div class="table-wrap">
-          <div class="table-header"><span class="table-title">📋 Check-ins de hoy</span></div>
+          <div class="table-header">
+            <span class="table-title">📋 Check-ins de hoy</span>
+            <div style="display:flex;gap:6px">
+              <input class="input" style="width:180px;font-size:12px" id="acceso-search" placeholder="Filtrar por socio..." oninput="renderCheckinList()">
+            </div>
+          </div>
           <table><thead><tr><th>Socio</th><th>Hora</th><th>Estado</th></tr></thead><tbody id="checkin-list"></tbody></table>
         </div>
         <div class="table-wrap">
@@ -594,6 +603,26 @@ select.input option{background:var(--card)}
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeModal('modal-add-instructor')">Cancelar</button>
       <button class="btn btn-primary" onclick="saveInstructor()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Checkin Manual -->
+<div class="modal-overlay" id="modal-checkin-manual">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">Registrar Entrada Manual</span><button class="modal-close" onclick="closeModal('modal-checkin-manual')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-field"><label class="form-label">Socio *</label>
+        <select class="input" id="cm-socio"></select>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label class="form-label">Fecha *</label><input class="input" type="date" id="cm-fecha"></div>
+        <div class="form-field"><label class="form-label">Hora *</label><input class="input" type="time" id="cm-hora"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-checkin-manual')">Cancelar</button>
+      <button class="btn btn-primary" onclick="registrarEntradaManual()">Registrar Entrada</button>
     </div>
   </div>
 </div>
@@ -1393,9 +1422,32 @@ function saveClase(){
 // ACCESO / CHECK-IN
 // ============================================================
 function renderAcceso(){
+  // KPIs
+  const hoy = DB.checkins.filter(c=>c.fecha===todayStr).length;
+  const hace7 = addDays(todayStr,-7);
+  const semana = DB.checkins.filter(c=>c.fecha>=hace7&&c.fecha<=todayStr).length;
+  const mesActual = TODAY.getMonth(); const anioActual = TODAY.getFullYear();
+  const mes = DB.checkins.filter(c=>{ const d=new Date(c.fecha); return d.getMonth()===mesActual&&d.getFullYear()===anioActual; }).length;
+  const socioDia = new Set(DB.checkins.filter(c=>c.fecha===todayStr).map(c=>c.socioId)).size;
+  const kpiEl = document.getElementById('acceso-kpi-grid');
+  if(kpiEl) kpiEl.innerHTML=`
+    <div class="kpi-card green"><div class="kpi-label">Entradas Hoy</div><div class="kpi-value green">${hoy}</div><div class="kpi-sub">${socioDia} socios distintos</div></div>
+    <div class="kpi-card blue"><div class="kpi-label">Esta Semana</div><div class="kpi-value" style="color:var(--primary-light)">${semana}</div><div class="kpi-sub">últimos 7 días</div></div>
+    <div class="kpi-card yellow"><div class="kpi-label">Este Mes</div><div class="kpi-value" style="color:var(--warn)">${mes}</div><div class="kpi-sub">${meses_nombres[mesActual]}</div></div>
+    <div class="kpi-card red"><div class="kpi-label">Promedio Diario</div><div class="kpi-value" style="color:var(--danger)">${mes>0?Math.round(mes/TODAY.getDate()):0}</div><div class="kpi-sub">entradas/día</div></div>
+  `;
+  // Poblar select del modal de entrada manual
+  const sel = document.getElementById('cm-socio');
+  if(sel) sel.innerHTML = DB.socios.filter(s=>s.estado==='activo'||s.estado==='moroso').map(s=>`<option value="${s.id}">${s.nombre} ${s.apellido} — DNI ${s.dni}</option>`).join('');
+  const cmFecha = document.getElementById('cm-fecha');
+  const cmHora = document.getElementById('cm-hora');
+  if(cmFecha && !cmFecha.value) cmFecha.value = todayStr;
+  if(cmHora && !cmHora.value){ const h=TODAY.getHours(),m=TODAY.getMinutes(); cmHora.value=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`; }
   renderCheckinList();
   renderHourChart();
 }
+
+const meses_nombres=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
 function searchCheckin(){
   const q=document.getElementById('checkin-input').value.toLowerCase();
@@ -1466,7 +1518,16 @@ function doCheckin(id){
 }
 
 function renderCheckinList(){
-  const ci=DB.checkins.filter(c=>c.fecha===todayStr);
+  const q = (document.getElementById('acceso-search')?.value||'').toLowerCase();
+  let ci = DB.checkins.filter(c=>c.fecha===todayStr);
+  if(q){
+    ci = ci.filter(c=>{
+      const s=getSocio(c.socioId);
+      return s && `${s.nombre} ${s.apellido} ${s.dni}`.toLowerCase().includes(q);
+    });
+  }
+  // Ordenar por hora desc
+  ci = [...ci].sort((a,b)=>b.hora.localeCompare(a.hora));
   const tbody=document.getElementById('checkin-list');
   if(!tbody) return;
   tbody.innerHTML=ci.map(c=>{
@@ -1478,15 +1539,34 @@ function renderCheckinList(){
     } else if(c.membershipTag==='morosa'){
       memberBadge = `<span class="badge badge-yellow">⚠ Cuota Morosa</span>`;
     }
+    const esManual = c.manual ? '<span class="badge badge-gray" style="margin-left:4px">manual</span>' : '';
     return `<tr>
       <td><div style="display:flex;align-items:center;gap:8px">
         <div class="avatar" style="background:${avatarColor(s.nombre)};width:28px;height:28px;font-size:10px">${initials(s.nombre,s.apellido)}</div>
-        ${s.nombre} ${s.apellido}
+        <span>${s.nombre} ${s.apellido}${esManual}</span>
       </div></td>
       <td>${c.hora}</td>
       <td>${memberBadge}</td>
     </tr>`;
   }).join('') || '<tr><td colspan="3"><div class="empty">Sin entradas hoy</div></td></tr>';
+}
+
+function registrarEntradaManual(){
+  const id = document.getElementById('cm-socio')?.value;
+  const fecha = document.getElementById('cm-fecha')?.value;
+  const hora = document.getElementById('cm-hora')?.value;
+  if(!id||!fecha||!hora){ toast('⚠️ Completá todos los campos','warning'); return; }
+  const s = getSocio(id);
+  if(!s){ toast('Socio no encontrado','error'); return; }
+  // Verificar duplicado en la misma fecha
+  const yaIngreso = DB.checkins.some(c=>c.socioId===id&&c.fecha===fecha);
+  if(yaIngreso){ toast('⚠️ Ya tiene entrada registrada en esa fecha','warning'); return; }
+  DB.checkins.push({socioId:id, hora, fecha, manual:true});
+  s.checkins.push(fecha);
+  saveDB();
+  closeModal('modal-checkin-manual');
+  toast(`✅ Entrada registrada: ${s.nombre} ${s.apellido} — ${hora}`,'success');
+  renderAcceso();
 }
 
 function renderHourChart(){
@@ -1848,28 +1928,98 @@ function renderAlertasSocios(){
 // REPORTE MENSUAL FIT
 function reporteMensualFit(){
   if(typeof XLSX === 'undefined'){ alert('Excel no disponible'); return; }
-  const mes = todayStr.slice(0,7);
+  const mesStr = todayStr.slice(0,7);
+  const mesActual = TODAY.getMonth();
+  const anioActual = TODAY.getFullYear();
   const socios = DB.socios || [];
-  const activos = socios.filter(s=>s.estado==='activo');
-  const vencidos = socios.filter(s=>s.estado==='activo'&&s.fechaVencimiento<todayStr);
-  const data = socios.map(s=>({
+
+  // --- Hoja 1: Socios ---
+  const dataSocios = socios.map(s=>({
     'Nombre': s.nombre + ' ' + s.apellido,
     'DNI': s.dni||'',
     'Estado': s.estado,
-    'Plan': s.plan||s.planNombre||getPlan(s.planId)?.nombre||'',
+    'Plan': getPlan(s.planId)?.nombre||'',
+    'Precio plan': getPlan(s.planId)?.precio||0,
+    'Fecha inicio': s.fechaInicio||'',
     'Vencimiento': s.fechaVencimiento||'',
+    'Teléfono': s.telefono||'',
+    'Email': s.email||''
+  }));
+
+  // --- Hoja 2: Ingresos del mes ---
+  const pagosMes = [];
+  socios.forEach(s=>{
+    (s.pagos||[]).forEach(p=>{
+      const d = new Date(p.fecha);
+      if(d.getMonth()===mesActual && d.getFullYear()===anioActual){
+        pagosMes.push({
+          'Socio': s.nombre+' '+s.apellido,
+          'Plan': getPlan(s.planId)?.nombre||'',
+          'Monto': p.monto,
+          'Método': p.metodo,
+          'Fecha': p.fecha,
+          'Período': p.mes
+        });
+      }
+    });
+  });
+  const totalIngresos = pagosMes.reduce((a,p)=>a+Number(p.Monto),0);
+
+  // --- Hoja 3: Vencimientos del mes ---
+  const vencimientosMes = socios.filter(s=>{
+    if(!s.fechaVencimiento) return false;
+    const d = new Date(s.fechaVencimiento);
+    return d.getMonth()===mesActual && d.getFullYear()===anioActual;
+  }).map(s=>({
+    'Nombre': s.nombre+' '+s.apellido,
+    'DNI': s.dni||'',
+    'Plan': getPlan(s.planId)?.nombre||'',
+    'Vencimiento': s.fechaVencimiento,
+    'Estado': s.estado,
     'Teléfono': s.telefono||''
   }));
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(data), 'Socios');
+
+  // --- Hoja 4: Clases del mes ---
+  const clasesData = (DB.clases||[]).map(c=>({
+    'Clase': c.nombre,
+    'Día': diasNombres[c.dia],
+    'Hora': c.hora,
+    'Instructor': getInstructor(c.instructor)?.nombre||'',
+    'Inscritos': c.inscritos?.length||0,
+    'Cupo': c.cupo,
+    'Dada': c.dada===false?'No':'Sí'
+  }));
+  const clasesGiradas = (DB.clases||[]).filter(c=>c.dada!==false).length;
+
+  // --- Hoja 5: Resumen ejecutivo ---
+  const activos = socios.filter(s=>s.estado==='activo').length;
+  const morosos = socios.filter(s=>s.estado==='moroso').length;
+  const totalEgresos = (DB.egresos||[]).reduce((a,e)=>a+e.monto,0);
+  const checkinsDelMes = (DB.checkins||[]).filter(c=>{
+    const d=new Date(c.fecha); return d.getMonth()===mesActual&&d.getFullYear()===anioActual;
+  }).length;
   const resumen = [
-    {'Dato':'Total socios','Valor':socios.length},
-    {'Dato':'Socios activos','Valor':activos.length},
-    {'Dato':'Membresías vencidas','Valor':vencidos.length},
-    {'Dato':'Mes','Valor':mes},
+    {'Indicador':'Mes','Valor': meses_nombres[mesActual]+' '+anioActual},
+    {'Indicador':'Total socios','Valor': socios.length},
+    {'Indicador':'Socios activos','Valor': activos},
+    {'Indicador':'Socios morosos','Valor': morosos},
+    {'Indicador':'Ingresos del mes','Valor': totalIngresos},
+    {'Indicador':'Egresos del mes','Valor': totalEgresos},
+    {'Indicador':'Resultado neto','Valor': totalIngresos - totalEgresos},
+    {'Indicador':'Clases programadas','Valor': DB.clases?.length||0},
+    {'Indicador':'Clases dadas','Valor': clasesGiradas},
+    {'Indicador':'Check-ins del mes','Valor': checkinsDelMes},
+    {'Indicador':'Vencimientos este mes','Valor': vencimientosMes.length},
   ];
+
+  const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(resumen), 'Resumen');
-  XLSX.writeFile(wb, `reporte_fit_${mes}.xlsx`);
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(dataSocios), 'Socios');
+  if(pagosMes.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(pagosMes), 'Ingresos');
+  if(vencimientosMes.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(vencimientosMes), 'Vencimientos');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(clasesData), 'Clases');
+  XLSX.writeFile(wb, `reporte_aurafit_${mesStr}.xlsx`);
+  toast('✅ Reporte exportado','success');
 }
 
 // Populate selects on load
