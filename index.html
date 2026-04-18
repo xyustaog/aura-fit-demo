@@ -251,6 +251,29 @@ select.input option{background:var(--card)}
 .filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
 .chip{padding:5px 12px;border-radius:20px;font-size:12px;cursor:pointer;background:var(--surface);border:1px solid var(--border);color:var(--muted);transition:.2s}
 .chip.active{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.4);color:var(--primary)}
+/* AGENTES IA */
+.agents-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.agent-card{display:flex;flex-direction:column;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
+.agent-header{display:flex;align-items:flex-start;gap:10px}
+.agent-icon{width:36px;height:36px;background:rgba(59,91,219,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--primary-light);flex-shrink:0}
+.agent-name{font-size:14px;font-weight:700;color:var(--text)}
+.agent-tag{font-size:11px;color:#22C55E;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.agent-desc{font-size:13px;color:var(--muted);line-height:1.55;margin:0}
+.agent-solves{list-style:none;display:flex;flex-direction:column;gap:5px;flex:1;padding:0;margin:0}
+.agent-solves li{font-size:12px;color:var(--muted);padding-left:14px;position:relative;line-height:1.45}
+.agent-solves li::before{content:'→';position:absolute;left:0;color:var(--primary-light);font-weight:700}
+.agent-intro{background:rgba(59,91,219,0.08);border-left:4px solid var(--primary);border-radius:10px;padding:16px 20px;margin-bottom:20px}
+.agent-intro-title{font-size:15px;font-weight:700;color:var(--primary-light);margin-bottom:4px}
+.agent-intro-sub{font-size:13px;color:var(--muted);line-height:1.5}
+.agent-status{margin-left:auto;background:rgba(34,197,94,.15);color:#22C55E;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;white-space:nowrap}
+.agent-scenario{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.agent-flow{display:flex;flex-direction:column;gap:6px;margin:8px 0;padding:10px 12px;background:rgba(0,0,0,0.25);border-radius:8px}
+.flow-step{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--muted)}
+.flow-dot{width:18px;height:18px;border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;margin-top:1px}
+.flow-dot.detect{background:#D1FAE5;color:#065F46}
+.flow-dot.analyze{background:rgba(250,176,5,.25);color:#FBB03B}
+.flow-dot.act{background:rgba(34,197,94,.2);color:#22C55E}
+@media(max-width:480px){.agents-grid{grid-template-columns:1fr}.flow-step{flex-direction:column;gap:4px}.agent-header{flex-wrap:wrap;gap:8px}.agent-status{margin-left:0}}
 
 .empty{text-align:center;padding:40px;color:var(--muted)}
 .empty-icon{font-size:40px;margin-bottom:12px}
@@ -280,6 +303,7 @@ select.input option{background:var(--card)}
     <button class="nav-item" onclick="nav('acceso')"><span class="nav-icon">🔐</span> Control de Acceso</button>
     <button class="nav-item" onclick="nav('instructores')"><span class="nav-icon">🎯</span> Instructores</button>
     <button class="nav-item" onclick="nav('caja')"><span class="nav-icon">💰</span> Caja del Mes</button>
+    <button class="nav-item" onclick="nav('agentes')"><span class="nav-icon">🤖</span> Agentes IA</button>
   </nav>
   <div class="sidebar-footer">v1.0 · <a href="https://yustalabs-web.vercel.app" target="_blank" style="color:inherit;text-decoration:none;opacity:.8" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.8'">Powered by Yusta Labs ↗</a></div>
 </aside>
@@ -329,6 +353,20 @@ select.input option{background:var(--card)}
             <div class="table-header"><span class="table-title">🏃 Próximas clases del día</span></div>
             <div id="proximas-clases" style="padding:12px"></div>
           </div>
+        </div>
+      </div>
+
+      <!-- AGENTES IA WIDGET -->
+      <div class="table-wrap" style="margin-top:20px;border-left:3px solid var(--primary)">
+        <div class="table-header">
+          <span class="table-title">🤖 Actividad de Agentes IA</span>
+          <button onclick="nav('agentes')" class="btn btn-ghost btn-sm">Ver todos →</button>
+        </div>
+        <div style="padding:12px;display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:rgba(0,0,0,.25);border-radius:8px"><span style="font-size:13px">El Cobrador — 6 recordatorios de cuota vencida enviados</span><span class="badge badge-green" style="font-size:10px;padding:2px 8px;border-radius:99px;background:rgba(34,197,94,.15);color:#22C55E;font-weight:700">Completado</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:rgba(0,0,0,.25);border-radius:8px"><span style="font-size:13px">El Fidelizador — 4 socios sin check-in +30d detectados</span><span style="font-size:10px;padding:2px 8px;border-radius:99px;background:rgba(250,176,5,.25);color:#FBB03B;font-weight:700">Acción requerida</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:rgba(0,0,0,.25);border-radius:8px"><span style="font-size:13px">El Analista — reporte semanal de retención listo</span><span style="font-size:10px;padding:2px 8px;border-radius:99px;background:rgba(34,197,94,.15);color:#22C55E;font-weight:700">Completado</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:rgba(0,0,0,.25);border-radius:8px"><span style="font-size:13px">El Recepcionista — 12 consultas respondidas vía WhatsApp</span><span style="font-size:10px;padding:2px 8px;border-radius:99px;background:rgba(59,91,219,.2);color:#4C6EF5;font-weight:700">En proceso</span></div>
         </div>
       </div>
     </div>
@@ -417,7 +455,7 @@ select.input option{background:var(--card)}
     <div class="section" id="sec-instructores">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
         <div class="page-title">Instructores</div>
-        <button class="btn btn-primary" onclick="openModal('modal-add-instructor')">+ Nuevo</button>
+        <button class="btn btn-primary" onclick="openAddInstructor()">+ Nuevo</button>
       </div>
       <div class="page-sub">Gestión de instructores y liquidaciones</div>
       <div id="instructores-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-bottom:20px"></div>
@@ -435,6 +473,13 @@ select.input option{background:var(--card)}
       <div class="page-title">Caja del Mes</div>
       <div class="page-sub">Resumen financiero</div>
       <div id="caja-content"></div>
+    </div>
+
+    <!-- AGENTES IA -->
+    <div class="section" id="sec-agentes">
+      <div class="page-title">Agentes IA</div>
+      <div class="page-sub">Tus empleados digitales que trabajan 24/7</div>
+      <div id="agentes-content"></div>
     </div>
   </div>
 
@@ -487,7 +532,7 @@ select.input option{background:var(--card)}
 <!-- Renovar Cuota -->
 <div class="modal-overlay" id="modal-renovar">
   <div class="modal">
-    <div class="modal-header"><span class="modal-title">Renovar Cuota</span><button class="modal-close" onclick="closeModal('modal-renovar')">✕</button></div>
+    <div class="modal-header"><span class="modal-title">Renovar Cuota</span><button class="modal-close" onclick="closeModal('modal-renovar');document.getElementById('ren-monto').value='';">✕</button></div>
     <div class="modal-body">
       <div id="renovar-info" style="margin-bottom:16px"></div>
       <div class="form-field"><label class="form-label">Plan</label><select class="input" id="ren-plan"></select></div>
@@ -502,7 +547,7 @@ select.input option{background:var(--card)}
       <input type="hidden" id="ren-socio-id">
     </div>
     <div class="modal-footer">
-      <button class="btn btn-outline" onclick="closeModal('modal-renovar')">Cancelar</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-renovar');document.getElementById('ren-monto').value='';">Cancelar</button>
       <button class="btn btn-primary" onclick="renovarCuota()">Confirmar Renovación</button>
     </div>
   </div>
@@ -602,7 +647,7 @@ select.input option{background:var(--card)}
     </div>
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeModal('modal-add-instructor')">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveInstructor()">Guardar</button>
+      <button class="btn btn-primary" id="btn-save-instructor" onclick="saveOrUpdateInstructor()">Guardar</button>
     </div>
   </div>
 </div>
@@ -636,7 +681,7 @@ select.input option{background:var(--card)}
 // ============================================================
 const KEY = 'afit-v1';
 let DB = {};
-let state = { section:'dashboard', socioFilter:{estado:'all', plan:'all'} };
+let state = { section:'dashboard', socioFilter:{estado:'all', plan:'all'}, editInstructorId:null };
 
 const TODAY = new Date();
 const todayStr = TODAY.toISOString().split('T')[0];
@@ -819,7 +864,7 @@ function nav(section){
   if(secEl) secEl.classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.querySelectorAll('.bnav-item').forEach(n=>n.classList.remove('active'));
-  const idx=['dashboard','socios','planes','clases','acceso','instructores','caja'].indexOf(section);
+  const idx=['dashboard','socios','planes','clases','acceso','instructores','caja','agentes'].indexOf(section);
   const navItems=document.querySelectorAll('.nav-item');
   if(navItems[idx]) navItems[idx].classList.add('active');
   const bnavMap={'dashboard':0,'socios':1,'clases':2,'acceso':3,'caja':4};
@@ -854,6 +899,37 @@ function renderSection(s){
   else if(s==='acceso') renderAcceso();
   else if(s==='instructores') renderInstructores();
   else if(s==='caja') renderCaja();
+  else if(s==='agentes') renderAgentes();
+}
+
+function renderAgentes(){
+  const el=document.getElementById('agentes-content');
+  if(!el)return;
+  const agents=[
+    {icon:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',tag:'Agente de atención',name:'El Recepcionista',desc:'Un prospecto escribe un sábado a las 10pm: "¿Tenés clase de spinning los martes a la noche?" El agente consulta el cronograma, responde con horario, instructor y cupos disponibles — y ofrece reservar la clase.',flow:[{t:'detect',l:'Detecta',v:'Consulta entrante por WhatsApp sobre horarios, clases, planes o ubicación'},{t:'analyze',l:'Analiza',v:'Busca en el cronograma, planes vigentes y estado del socio si ya existe'},{t:'act',l:'Actúa',v:'Responde con info exacta y puede agendar clase o reenviar link de pago'}],solves:['Prospectos que consultan fuera de horario y no reciben respuesta','Recepción ocupada respondiendo las mismas consultas una y otra vez','Oportunidades de venta perdidas por demora en responder']},
+    {icon:'<rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/>',tag:'Agente de cobros',name:'El Cobrador',desc:'La cuota mensual de Gómez venció hace 5 días y no hizo check-in desde entonces. El agente le manda un recordatorio profesional, registra la respuesta y si no hay reacción en 48hs lo escala.',flow:[{t:'detect',l:'Detecta',v:'Socio con cuota vencida hace más de 3 días sin renovar'},{t:'analyze',l:'Analiza',v:'Días de mora, plan contratado e historial de pago del socio'},{t:'act',l:'Actúa',v:'Envía recordatorio por WhatsApp con link de pago y registra promesa'}],solves:['Socios que se dan de baja silenciosa sin renovar y nadie se entera','Recepción persiguiendo cobros uno por uno cada fin de mes','Ingresos irregulares por falta de seguimiento de cuotas']},
+    {icon:'<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.69a16 16 0 0 0 6.29 6.29l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>',tag:'Agente de recordatorio',name:'El Community',desc:'A Méndez le vence el plan anual en 5 días. El agente le escribe: "Hola Méndez, tu plan anual vence el viernes. ¿Te reservo la renovación con el 15% de descuento por fidelidad?" Con tu nombre de gimnasio, sin que vos lo recuerdes.',flow:[{t:'detect',l:'Detecta',v:'Socio con plan próximo a vencer en 5 a 7 días'},{t:'analyze',l:'Analiza',v:'Historial de renovación, asistencia y perfil del socio para ofrecer incentivo'},{t:'act',l:'Actúa',v:'Envía WhatsApp personalizado con link de renovación y posible descuento'}],solves:['Socios que no renuevan por olvido y terminan yéndose','Pérdida de recurrencia por falta de aviso previo al vencimiento','Recepción sin tiempo para hacer seguimiento personalizado']},
+    {icon:'<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>',tag:'Agente de retención',name:'El Fidelizador',desc:'López paga todos los meses pero no hace check-in hace 38 días. El agente detecta el riesgo de baja, le manda un mensaje cálido preguntando por su progreso y le ofrece una sesión gratis con un entrenador.',flow:[{t:'detect',l:'Detecta',v:'Socio activo sin check-in hace más de 30 días'},{t:'analyze',l:'Analiza',v:'Frecuencia histórica de asistencia, clases favoritas y plan contratado'},{t:'act',l:'Actúa',v:'Envía mensaje empático con oferta específica para recuperar hábito'}],solves:['Socios que dejan de venir y luego cancelan sin aviso','Ingresos perdidos por bajas prevenibles con contacto a tiempo','No saber qué socios están en riesgo hasta que ya se fueron']},
+    {icon:'<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>',tag:'Agente de datos',name:'El Analista',desc:'Cada lunes a las 8am: "182 socios activos, retención 87%, clase más concurrida: funcional martes 19hs, ingresos $1.4M. 14 socios en riesgo de baja." Llega solo al WhatsApp del dueño.',flow:[{t:'detect',l:'Detecta',v:'Cierre de semana o fin de mes configurado'},{t:'analyze',l:'Analiza',v:'Asistencias, retention rate, ingresos por plan y socios en riesgo'},{t:'act',l:'Actúa',v:'Envía reporte ejecutivo con KPIs y socios que requieren atención'}],solves:['No saber qué clases llenan y cuáles hay que reemplazar','Perder socios sin entender el motivo ni el patrón','Horas en Excel cruzando datos que no llevan a decisiones']},
+    {icon:'<path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>',tag:'Agente de promoción',name:'El Promotor',desc:'Fernández viene solo 2 veces por semana y pagó el plan mensual. El agente detecta el patrón y le ofrece: "Con el plan libre por solo $2.500 más podés venir todos los días y acceder a clases grupales."',flow:[{t:'detect',l:'Detecta',v:'Socios con asistencia irregular o plan subutilizado'},{t:'analyze',l:'Analiza',v:'Frecuencia, plan actual, clases utilizadas y potencial de upgrade'},{t:'act',l:'Actúa',v:'Envía oferta personalizada de upgrade de plan o pack de clases'}],solves:['Dejar de ganar upgrade de planes por no ofrecer en el momento justo','Socios que pagan más barato cuando podrían estar en un plan superior','Promos genéricas que nadie usa porque no le hablan a nadie']}
+  ];
+  const tpl=agents.map(a=>`<div class="agent-card">
+  <div class="agent-header">
+    <div class="agent-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">${a.icon}</svg></div>
+    <div style="flex:1"><div class="agent-tag">${a.tag}</div><div class="agent-name">${a.name}</div></div>
+    <span class="agent-status">Activo</span>
+  </div>
+  <p class="agent-desc">${a.desc}</p>
+  <div class="agent-scenario">Cómo funciona dentro de Aura Fit</div>
+  <div class="agent-flow">${a.flow.map(f=>`<div class="flow-step"><div class="flow-dot ${f.t}">${f.l.slice(0,3).toUpperCase()}</div><div><strong>${f.l}</strong> — ${f.v}</div></div>`).join('')}</div>
+  <div class="agent-scenario" style="margin-top:6px">Problemas que elimina</div>
+  <ul class="agent-solves">${a.solves.map(s=>`<li>${s}</li>`).join('')}</ul>
+</div>`).join('');
+  el.innerHTML=`<div class="agent-intro">
+  <div class="agent-intro-title">Tus empleados que trabajan 24/7 sin sueldo fijo</div>
+  <div class="agent-intro-sub">Cada agente monitorea socios, cuotas y asistencias — detecta situaciones clave y actúa solo, automatizando atención, cobranzas, retención y análisis para tu gimnasio.</div>
+</div>
+<div class="agents-grid">${tpl}</div>`;
 }
 
 // ============================================================
@@ -1172,6 +1248,7 @@ function addSocio(){
   closeModal('modal-add-socio');
   toast('✅ Socio creado');
   ['ns-nombre','ns-apellido','ns-dni','ns-tel','ns-email','ns-emerg','ns-notas'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  const nsPlan=document.getElementById('ns-plan'); if(nsPlan) nsPlan.selectedIndex=0;
   renderSocios();
 }
 
@@ -1421,6 +1498,8 @@ function saveClase(){
 // ============================================================
 // ACCESO / CHECK-IN
 // ============================================================
+const meses_nombres=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
 function renderAcceso(){
   // KPIs
   const hoy = DB.checkins.filter(c=>c.fecha===todayStr).length;
@@ -1446,8 +1525,6 @@ function renderAcceso(){
   renderCheckinList();
   renderHourChart();
 }
-
-const meses_nombres=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
 function searchCheckin(){
   const q=document.getElementById('checkin-input').value.toLowerCase();
@@ -1566,6 +1643,8 @@ function registrarEntradaManual(){
   saveDB();
   closeModal('modal-checkin-manual');
   toast(`✅ Entrada registrada: ${s.nombre} ${s.apellido} — ${hora}`,'success');
+  const cmFechaEl=document.getElementById('cm-fecha'); if(cmFechaEl) cmFechaEl.value='';
+  const cmHoraEl=document.getElementById('cm-hora'); if(cmHoraEl) cmHoraEl.value='';
   renderAcceso();
 }
 
@@ -1654,6 +1733,22 @@ function toggleClaseDada(claseId, val){
   if(c){ c.dada=val; saveDB(); renderLiquidacion(); }
 }
 
+function openAddInstructor(){
+  state.editInstructorId = null;
+  ['in-nombre','in-tel'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('in-comision').value = 40;
+  document.getElementById('in-precio').value = 3000;
+  document.getElementById('in-esp').selectedIndex = 0;
+  const btn = document.getElementById('btn-save-instructor');
+  if(btn) btn.textContent = 'Guardar';
+  openModal('modal-add-instructor');
+}
+
+function saveOrUpdateInstructor(){
+  if(state.editInstructorId) updateInstructor(state.editInstructorId);
+  else saveInstructor();
+}
+
 function saveInstructor(){
   const nombre=document.getElementById('in-nombre').value.trim();
   if(!nombre){ toast('⚠️ Ingresá un nombre'); return; }
@@ -1669,16 +1764,17 @@ function saveInstructor(){
 
 function editInstructor(id){
   const i=DB.instructores.find(x=>x.id===id); if(!i) return;
+  state.editInstructorId = id;
   document.getElementById('in-nombre').value=i.nombre;
   document.getElementById('in-esp').value=i.especialidad||'';
   document.getElementById('in-tel').value=i.tel||'';
   document.getElementById('in-comision').value=i.comision||40;
   document.getElementById('in-precio').value=i.precioPorClase||3000;
-  // Swap save button to update mode
-  const btn=document.querySelector('#modal-add-instructor .btn-primary');
-  if(btn){ btn.textContent='Guardar cambios'; btn.setAttribute('onclick',`updateInstructor('${id}')`); }
+  const btn=document.getElementById('btn-save-instructor');
+  if(btn) btn.textContent='Guardar cambios';
   openModal('modal-add-instructor');
 }
+
 function updateInstructor(id){
   const i=DB.instructores.find(x=>x.id===id); if(!i) return;
   const nombre=document.getElementById('in-nombre').value.trim();
@@ -1686,10 +1782,8 @@ function updateInstructor(id){
   i.nombre=nombre; i.especialidad=document.getElementById('in-esp').value;
   i.tel=document.getElementById('in-tel').value||''; i.comision=Number(document.getElementById('in-comision').value)||40;
   i.precioPorClase=Number(document.getElementById('in-precio').value)||3000;
+  state.editInstructorId = null;
   saveDB(); closeModal('modal-add-instructor'); toast('Instructor actualizado'); renderInstructores();
-  // Restore save button
-  const btn=document.querySelector('#modal-add-instructor .btn-primary');
-  if(btn){ btn.textContent='Agregar instructor'; btn.setAttribute('onclick','saveInstructor()'); }
 }
 function deleteInstructor(id){
   if(DB.clases.some(c=>c.instructor===id)){ toast('⚠️ Tiene clases asignadas. Reasignalas primero.'); return; }
